@@ -182,7 +182,7 @@ public class ScenarioTests
     }
 
     [TestCaseSource(typeof(ScenarioCreations), nameof(ScenarioCreations.FromDataWithArbitraryDescription))]
-    [Description("A data of a scenario is transformed. It should then contain that transformed data.")]
+    [Description("Data of a scenario is transformed. It should then contain that transformed data.")]
     public void WithTransformedData_transforms_existing_data(Func<string, Scenario<string>> scenarioCreation)
     {
         // Arrange
