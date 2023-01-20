@@ -99,4 +99,13 @@ public record Scenario<TData>(TData Data)
     [Pure]
     public virtual Scenario<TTransformedData> WithTransformedData<TTransformedData>(
         Func<TData, TTransformedData> transformation) => new(transformation(Data));
+
+    /// <summary>
+    /// Unwraps the <paramref name="scenario"/> by implicitly converting to <typeparamref name="TData"/>
+    /// and returning the underlying <see cref="Data"/>.
+    /// </summary>
+    /// <param name="scenario">The scenario to unwrap.</param>
+    /// <returns>The underlying <see cref="Data"/>.</returns>
+    [Pure]
+    public static implicit operator TData(Scenario<TData> scenario) => scenario.Data;
 }
