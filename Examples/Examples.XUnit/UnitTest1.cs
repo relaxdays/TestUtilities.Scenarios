@@ -11,13 +11,14 @@ public class UnitTest1
         {
             ImmutableArray.Create<string>("first", "last").AsScenario("all lower")
         };
+
+        public static IEnumerable<object[]> AllAsObjects => All.Select(scenario => new object[]{ scenario });
     }
 
-    // TODO
-    // [Theory]
-    // [MemberData(Names.All)]
-    // public void Test1()
-    // {
-    //
-    // }
+    [Theory]
+    [MemberData(nameof(Names.AllAsObjects), MemberType = typeof(Names))]
+    public void Test1(Scenario<ImmutableArray<string>> names)
+    {
+        Assert.Fail("failure");
+    }
 }
