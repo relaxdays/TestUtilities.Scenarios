@@ -9,7 +9,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  test:
     # TODO: Use alpine?
     runs-on: ubuntu-latest
     steps:
