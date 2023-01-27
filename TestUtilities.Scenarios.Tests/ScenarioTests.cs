@@ -197,4 +197,29 @@ public class ScenarioTests
         // Assert
         scenarioWithTransformedData.Data.Should().Be(TransformData(data));
     }
+
+    // TODO: Use other types than string as well
+    [TestCaseSource(typeof(ScenarioCreations), nameof(ScenarioCreations.FromDataWithArbitraryDescription))]
+    [Description(
+        """
+        A scenario is created from arbitrary data. It should then be implicitly convertible to the type of the wrapped
+        data, returning the wrapped data on conversion.
+        """)]
+    public void Scenarios_are_implicitly_convertible_to_the_wrapped_type(
+        Func<string, Scenario<string>> scenarioCreation)
+    {
+        // Arrange
+        const string data = "data";
+        var scenario = scenarioCreation(data);
+
+        // Act
+        Func<string> implicitConversion = () => scenario;
+
+        // Assert
+        implicitConversion.Should().NotThrow(
+            "a scenario should be implicitly convertible to the type of the wrapped data");
+
+        var dataFromConversion = implicitConversion();
+        dataFromConversion.Should().Be(data, "conversion should return the wrapped data");
+    }
 }
