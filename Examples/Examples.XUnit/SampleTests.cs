@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+using Examples.Common;
 using Relaxdays.TestUtilities.Scenarios;
 
 // xUnit1026: Theory methods should use all of their parameters
@@ -9,23 +9,23 @@ namespace Examples.XUnit;
 
 public class SampleTests
 {
-    private static class Names
+    private static class Players
     {
-        private static IEnumerable<Scenario<ImmutableArray<string>>> AllCases => new[]
-        {
-            ImmutableArray.Create<string>("dee jay", "blanka").AsScenario("all lowercase")
-        };
+        private static IEnumerable<Scenario<Player>> AllCases
+            => new Player[] { new("dee jay"), new("blanka") }
+                .Select(player => player.AsScenario(player.Name));
+
 
         // Needed because we can't use Names.AllCases directly, as it will produce error xUnit1019
         //      See: https://xunit.net/xunit.analyzers/rules/xUnit1019
-        public static IEnumerable<object[]> AllAsObjects => AllCases.Select(scenario => new object[]{ scenario });
+        public static IEnumerable<object[]> AllAsObjects => AllCases.Select(scenario => new object[] { scenario });
     }
 
     [Theory]
-    [MemberData(nameof(Names.AllAsObjects), MemberType = typeof(Names))]
-    public void Names_should_get_capitalized(Scenario<ImmutableArray<string>> names)
+    [MemberData(nameof(Players.AllAsObjects), MemberType = typeof(Players))]
+    public void Player_names_should_get_capitalized(Scenario<Player> playerScenario)
     {
         // Some business logic failing to capitalize names
-        Assert.Fail($"{nameof(names)} should get capitalized");
+        Assert.Fail("player names should get capitalized");
     }
 }

@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+using Examples.Common;
 using Relaxdays.TestUtilities.Scenarios;
 
 namespace Examples.MSTest;
@@ -6,22 +6,21 @@ namespace Examples.MSTest;
 [TestClass]
 public class SampleTests
 {
-    private static class Names
+    private static class Players
     {
-        private static IEnumerable<Scenario<ImmutableArray<string>>> AllCases => new[]
-        {
-            ImmutableArray.Create<string>("e.honda", "chun-li").AsScenario("all lowercase")
-        };
-        
-        // Needed because we can't use Names.AllCases directly, as it will produce the following error message:
+        private static IEnumerable<Scenario<Player>> AllCases
+            => new Player[] { new("e.honda"), new("chun-li") }
+                .Select(player => player.AsScenario(player.Name));
+
+        // Needed because we can't use Players.AllCases directly, as it will produce the following error message:
         // Value cannot be null. (Parameter 'Property or method AllCases on
-        //      Examples.MSTest.SampleTests+Names does not return IEnumerable<object[]>.')
-        public static IEnumerable<object[]> AllCasesAsObjects => AllCases.Select(scenario => new object[]{ scenario });
+        //      Examples.MSTest.SampleTests+Players does not return IEnumerable<object[]>.')
+        public static IEnumerable<object[]> AllCasesAsObjects => AllCases.Select(scenario => new object[] { scenario });
     }
-    
+
     [TestMethod]
-    [DynamicData(nameof(Names.AllCasesAsObjects), typeof(Names))]
-    public void Names_should_get_capitalized(Scenario<ImmutableArray<string>> names)
+    [DynamicData(nameof(Players.AllCasesAsObjects), typeof(Players))]
+    public void Player_names_should_get_capitalized(Scenario<Player> playerScenario)
     {
         // Some business logic failing to capitalize names
         Assert.Fail();
