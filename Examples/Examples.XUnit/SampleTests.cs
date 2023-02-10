@@ -1,9 +1,6 @@
+using System.Diagnostics.CodeAnalysis;
 using Examples.Common;
 using Relaxdays.TestUtilities.Scenarios;
-
-// xUnit1026: Theory methods should use all of their parameters
-// Justification: We don't need to actually use names in the test case to showcase Scenario usage
-#pragma warning disable xUnit1026
 
 namespace Examples.XUnit;
 
@@ -23,6 +20,8 @@ public class SampleTests
 
     [Theory]
     [MemberData(nameof(Players.AllAsObjects), MemberType = typeof(Players))]
+    [SuppressMessage("Roslyn", "xUnit1026",
+        Justification = "We don't need to use the method parameter to showcase Scenario usage")]
     public void Player_names_should_get_capitalized(Scenario<Player> playerScenario)
     {
         // Some business logic failing to capitalize names
