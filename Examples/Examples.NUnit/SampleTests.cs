@@ -17,7 +17,7 @@ public class SampleTests
 
     [Test]
     [TestCaseSource(typeof(PlayersRaw), nameof(PlayersRaw.AllCases))]
-    public void Player_names_should_get_capitalized_raw(Player player)
+    public void NUnit_Player_names_should_get_capitalized_raw(Player player)
     {
         // Some business logic failing to capitalize names
         Assert.Fail();
@@ -38,7 +38,7 @@ public class SampleTests
     // A NUnit-builtin alternative to scenarios (in this case) is using TestCaseSource with TestCaseParameters and
     // SetArgDisplayNames. See README for a more detail comparison of the different approaches.
     [TestCaseSource(typeof(PlayersScenario), nameof(PlayersScenario.AllCases))]
-    public void Player_names_should_get_capitalized_scenario(Scenario<Player> playerScenario)
+    public void NUnit_Player_names_should_get_capitalized_scenario(Scenario<Player> playerScenario)
     {
         // Some business logic failing to capitalize names
         Assert.Fail();

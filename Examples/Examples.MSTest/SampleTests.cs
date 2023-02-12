@@ -21,7 +21,7 @@ public class SampleTests
     
     [TestMethod]
     [DynamicData(nameof(PlayersRaw.AllCasesAsObjects), typeof(PlayersRaw))]
-    public void Player_names_should_get_capitalized_raw(Player player)
+    public void MSTest_Player_names_should_get_capitalized_raw(Player player)
     {
         // Some business logic failing to capitalize names
         Assert.Fail();
@@ -43,7 +43,7 @@ public class SampleTests
 
     [TestMethod]
     [DynamicData(nameof(PlayersScenario.AllCasesAsObjects), typeof(PlayersScenario))]
-    public void Player_names_should_get_capitalized_scenario(Scenario<Player> playerScenario)
+    public void MSTest_Player_names_should_get_capitalized_scenario(Scenario<Player> playerScenario)
     {
         // Some business logic failing to capitalize names
         Assert.Fail();

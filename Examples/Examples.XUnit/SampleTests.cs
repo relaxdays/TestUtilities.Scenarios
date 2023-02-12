@@ -25,7 +25,7 @@ public class SampleTests
 
     [Theory]
     [MemberData(nameof(PlayersRaw.AllCasesAsObjects), MemberType = typeof(PlayersRaw))]
-    public void Player_names_should_get_capitalized_raw(Player player)
+    public void XUnit_Player_names_should_get_capitalized_raw(Player player)
     {
         // Some business logic failing to capitalize names
         Assert.Fail("player names should get capitalized");
@@ -48,7 +48,7 @@ public class SampleTests
 
     [Theory]
     [MemberData(nameof(PlayersScenario.AllCasesAsObjects), MemberType = typeof(PlayersScenario))]
-    public void Player_names_should_get_capitalized_scenario(Scenario<Player> playerScenario)
+    public void XUnit_Player_names_should_get_capitalized_scenario(Scenario<Player> playerScenario)
     {
         // Some business logic failing to capitalize names
         Assert.Fail("player names should get capitalized");
