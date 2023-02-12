@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.XUnit", "Examples.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUtilities.Scenarios", "..\TestUtilities.Scenarios\TestUtilities.Scenarios.csproj", "{45599EF7-6848-42BC-AC61-4F1F8EA227FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.Comparison", "Examples.Comparison\Examples.Comparison.csproj", "{6AE01BEB-94CD-4ED1-AD09-7F465A655A25}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.Common", "Examples.Common\Examples.Common.csproj", "{673FC7B5-78E9-4416-BB36-1E8129C11403}"
 EndProject
 Global
@@ -40,10 +38,6 @@ Global
 		{45599EF7-6848-42BC-AC61-4F1F8EA227FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45599EF7-6848-42BC-AC61-4F1F8EA227FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45599EF7-6848-42BC-AC61-4F1F8EA227FF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6AE01BEB-94CD-4ED1-AD09-7F465A655A25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6AE01BEB-94CD-4ED1-AD09-7F465A655A25}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6AE01BEB-94CD-4ED1-AD09-7F465A655A25}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6AE01BEB-94CD-4ED1-AD09-7F465A655A25}.Release|Any CPU.Build.0 = Release|Any CPU
 		{673FC7B5-78E9-4416-BB36-1E8129C11403}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{673FC7B5-78E9-4416-BB36-1E8129C11403}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{673FC7B5-78E9-4416-BB36-1E8129C11403}.Release|Any CPU.ActiveCfg = Release|Any CPU

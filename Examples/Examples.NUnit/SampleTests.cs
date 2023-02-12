@@ -5,7 +5,29 @@ namespace Examples.NUnit;
 
 public class SampleTests
 {
-    private static class Players
+    // -------------------------------------------------------------------------------------------------------------- //
+    //                                              Raw example                                                       //
+    // -------------------------------------------------------------------------------------------------------------- //
+
+    private static class PlayersRaw
+    {
+        public static IEnumerable<Player> AllCases
+            => new Player[] { new("guile"), new("juri") };
+    }
+
+    [Test]
+    [TestCaseSource(typeof(PlayersRaw), nameof(PlayersRaw.AllCases))]
+    public void Player_names_should_get_capitalized_raw(Player player)
+    {
+        // Some business logic failing to capitalize names
+        Assert.Fail();
+    }
+
+    // -------------------------------------------------------------------------------------------------------------- //
+    //                                            Scenario example                                                    //
+    // -------------------------------------------------------------------------------------------------------------- //
+
+    private static class PlayersScenario
     {
         public static IEnumerable<Scenario<Player>> AllCases
             => new Player[] { new("cammy"), new("dhalsim") }
@@ -13,11 +35,10 @@ public class SampleTests
     }
 
     [Test]
-    public void Player_names_should_get_capitalized(
-        // Could also be used with TestCaseSource in this simple example, but the original use case of scenarios is to
-        // be used with ValueSource, e.g. when providing combinations of values to test method parameters via multiple
-        // value sources
-        [ValueSource(typeof(Players), nameof(Players.AllCases))] Scenario<Player> playerScenario)
+    // A NUnit-builtin alternative to scenarios (in this case) is using TestCaseSource with TestCaseParameters and
+    // SetArgDisplayNames. See README for a more detail comparison of the different approaches.
+    [TestCaseSource(typeof(PlayersScenario), nameof(PlayersScenario.AllCases))]
+    public void Player_names_should_get_capitalized_scenario(Scenario<Player> playerScenario)
     {
         // Some business logic failing to capitalize names
         Assert.Fail();
