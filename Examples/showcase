@@ -19,14 +19,15 @@ validate_showcase_type() {
 
 run_tests() {
     local type=$1
-    # Redirecting stderr to filter our failure messages from XUnit
+    # Redirecting stderr to filter out failure messages from XUnit
     # that we don't want in the output
     dotnet test --filter "$type" 2>/dev/null | grep "Failed "
 }
 
 main() {
-    validate_showcase_type "$1"
-    run_tests "$1"
+    local type=$1
+    validate_showcase_type "$type"
+    run_tests "$type"
 }
 
 # Entrypoint
