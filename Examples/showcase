@@ -19,15 +19,22 @@ validate_showcase_type() {
 
 run_tests() {
     local type=$1
-    # Redirecting stderr to filter out failure messages from XUnit
-    # that we don't want in the output
-    dotnet test --filter "$type" 2>/dev/null | grep "Failed "
+    local testFramework=$2
+    # Consider the following to understand why we run tests this way:
+    #   * We redirect stderr to filter out failure messages from XUnit that we don't want in the output
+    #   * We only run one test framework per run because running all of them sometimes results in garbled output
+    #   * We || true because failing tests return a non-zero exit code and we want to continue execution
+    #   * We grep for "Failed " to show only the part of the output that prints the test display name
+    (dotnet test --filter "FullyQualifiedName~$type&FullyQualifiedName~$testFramework" 2>/dev/null || true) \
+        | grep "Failed "
 }
 
 main() {
     local type=$1
     validate_showcase_type "$type"
-    run_tests "$type"
+    run_tests "$type" MSTest
+    run_tests "$type" NUnit
+    run_tests "$type" XUnit
 }
 
 # Entrypoint
