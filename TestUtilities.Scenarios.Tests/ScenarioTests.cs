@@ -22,6 +22,9 @@ public class ScenarioTests
 
             new TestCaseData(new Func<string, Scenario<string>>(data => data.AsScenario("description")))
                 .SetArgDisplayNames("Extension method, with description"),
+            
+            new TestCaseData(new Func<string, Scenario<string>>(data => data.AsScenario($"{data} description")))
+                .SetArgDisplayNames("Extension method, with selected description"),
         };
 
         public static IEnumerable<TestCaseParameters> FromDataWithDefaultDescription => new[]

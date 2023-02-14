@@ -104,6 +104,33 @@ public record Scenario<TData>(TData Data)
     [Pure]
     public Scenario<TTransformedData> WithTransformedData<TTransformedData>(
         Func<TData, TTransformedData> transformation) => new(transformation(Data));
+    
+    [Pure]
+    public virtual Scenario<TCombinedData> CombinedWith<TOtherData, TCombinedData>(
+        Scenario<TOtherData> otherScenario,
+        Func<TData, TOtherData, TCombinedData> resultDataSelector,
+        Func<string, string, string> resultDescriptionSelector)
+        => CombinedWith(string.Empty, otherScenario, resultDataSelector, resultDescriptionSelector);
+    
+    [Pure]
+    public virtual Scenario<(TData First, TOtherData Second)> CombinedWith<TOtherData>(
+        Scenario<TOtherData> otherScenario)
+        => CombinedWith(
+            string.Empty,
+            otherScenario,
+            (data, otherData) => (data, otherData),
+            (description, otherDescription) => $"({description}, {otherDescription})");
+    
+    [Pure]
+    protected Scenario<TCombinedData> CombinedWith<TOtherData, TCombinedData>(
+        string description,
+        Scenario<TOtherData> otherScenario,
+        Func<TData, TOtherData, TCombinedData> resultDataSelector,
+        Func<string, string, string> resultDescriptionSelector)
+        => otherScenario
+            .WithTransformedDescription(
+                otherDescription => resultDescriptionSelector(description, otherDescription))
+            .WithTransformedData(otherData => resultDataSelector(Data, otherData));
 
     /// <summary>
     /// Unwraps the <paramref name="scenario"/> by implicitly converting to <typeparamref name="TData"/>

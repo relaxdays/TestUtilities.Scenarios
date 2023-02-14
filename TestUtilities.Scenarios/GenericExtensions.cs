@@ -32,4 +32,10 @@ public static class GenericExtensions
 #pragma warning restore CS1573
         string description)
         => data.AsScenario().WithDescription(description);
+
+    // TODO: Comments
+    // TODO: Disable CS1573 for the file / class / via SuppressMessage
+    [Pure]
+    public static Scenario<TData> AsScenario<TData>(this TData data, Func<TData, string> descriptionSelector)
+        => data.AsScenario(descriptionSelector(data));
 }
