@@ -53,6 +53,12 @@ namespace Relaxdays.TestUtilities.Scenarios;
 [PublicAPI]
 public record Scenario<TData>(TData Data)
 {
+    private string Description { get; init; } = Data?.ToString() ?? string.Empty;
+
+    /// <inheritdoc />
+    [Pure]
+    public override string ToString() => $"\"{Description}\"";
+
     /// <summary>
     /// Provides a <paramref name="description"/> for the scenario.
     /// </summary>
@@ -61,8 +67,7 @@ public record Scenario<TData>(TData Data)
     ///     A scenario encapsulating <see cref="Data"/>, with the provided <paramref name="description"/>.
     /// </returns>
     [Pure]
-    public Scenario<TData> WithDescription(string description)
-        => new ScenarioWithDescription<TData>(Data, description);
+    public Scenario<TData> WithDescription(string description) => this with { Description = description };
 
     /// <summary>
     /// Transforms the scenario's description (or <see cref="string.Empty"/>, if none has been set) by
@@ -73,8 +78,8 @@ public record Scenario<TData>(TData Data)
     ///     A scenario encapsulating <see cref="Data"/>, with the transformed description.
     /// </returns>
     [Pure]
-    public virtual Scenario<TData> WithTransformedDescription(Func<string, string> transformation)
-        => WithDescription(transformation(string.Empty));
+    public Scenario<TData> WithTransformedDescription(Func<string, string> transformation)
+        => WithDescription(transformation(Description));
 
     /// <summary>
     /// Transforms the scenario's description (or <see cref="string.Empty"/>, if none has been set) by
@@ -97,7 +102,7 @@ public record Scenario<TData>(TData Data)
     ///     A scenario the transformed data, with the previously provided description (if existent).
     /// </returns>
     [Pure]
-    public virtual Scenario<TTransformedData> WithTransformedData<TTransformedData>(
+    public Scenario<TTransformedData> WithTransformedData<TTransformedData>(
         Func<TData, TTransformedData> transformation) => new(transformation(Data));
 
     /// <summary>
