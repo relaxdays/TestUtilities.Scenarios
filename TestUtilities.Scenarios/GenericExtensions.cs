@@ -31,5 +31,5 @@ public static class GenericExtensions
         this TData data,
 #pragma warning restore CS1573
         string description)
-        => new ScenarioWithDescription<TData>(data, description);
+        => data.AsScenario().WithDescription(description);
 }

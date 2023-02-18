@@ -24,7 +24,7 @@ public class ScenarioTests
                 .SetArgDisplayNames("Extension method, with description"),
         };
 
-        public static IEnumerable<TestCaseParameters> FromDataWithEmptyDescription => new[]
+        public static IEnumerable<TestCaseParameters> FromDataWithDefaultDescription => new[]
         {
             new TestCaseData(new Func<string, Scenario<string>>(data => new(data)))
                 .SetArgDisplayNames("Scenario constructor"),
@@ -91,6 +91,25 @@ public class ScenarioTests
         StringRepresentationShouldBeDescription(scenario, description);
     }
 
+    // TODO: Test for data with ToString that returns null
+    [TestCaseSource(typeof(ScenarioCreations), nameof(ScenarioCreations.FromDataWithDefaultDescription))]
+    [Description("""
+        A scenario is created without setting a description. The description should then default to the data's string
+        representation.
+        """)]
+    public void Default_description_is_data_to_string(Func<string, Scenario<string>> scenarioCreation)
+    {
+        // Arrange
+        const string data = "data";
+
+        // Act
+        var scenario = scenarioCreation(data);
+
+        // Assert
+        scenario.Data.Should().Be(data);
+        StringRepresentationShouldBeDescription(scenario, data);
+    }
+
     [TestCaseSource(typeof(ScenarioCreations), nameof(ScenarioCreations.FromDataAndDescription))]
     [Description("The description of a scenario with arbitrary non empty description is transformed."
                  + "The string representation of the scenario should then be that transformed description.")]
@@ -114,28 +133,6 @@ public class ScenarioTests
             TransformDescription(description));
     }
 
-    [TestCaseSource(typeof(ScenarioCreations), nameof(ScenarioCreations.FromDataWithEmptyDescription))]
-    [Description("The description of a scenario with an empty description is transformed. The string "
-                 + "representation of the scenario should then be the transformation of an empty string.")]
-    public void WithTransformedDescription_transforms_empty_string_if_no_description_exists(
-        Func<string, Scenario<string>> scenarioCreation)
-    {
-        // Arrange
-        const string data = "data";
-
-        string TransformDescription(string originalDescription) => $"transformed {originalDescription}";
-        var scenario = scenarioCreation(data);
-
-        // Act
-        var scenarioWithTransformedDescription = scenario.WithTransformedDescription(TransformDescription);
-
-        // Assert
-        scenario.Data.Should().Be(data);
-        StringRepresentationShouldBeDescription(
-            scenarioWithTransformedDescription,
-            TransformDescription(string.Empty));
-    }
-
     [TestCaseSource(typeof(ScenarioCreations), nameof(ScenarioCreations.FromDataAndDescription))]
     [Description("The description of a scenario with arbitrary non empty description is appended to. The string "
                  + "representation of the scenario should then be the original description with the appendage.")]
@@ -157,28 +154,6 @@ public class ScenarioTests
         StringRepresentationShouldBeDescription(
             scenarioWithTransformedDescription,
             $"{description} {appendage}");
-    }
-
-    [TestCaseSource(typeof(ScenarioCreations), nameof(ScenarioCreations.FromDataWithEmptyDescription))]
-    [Description("The description of a scenario with an empty description is appended to. The string "
-                 + "representation of the scenario should then be an empty string with the appendage.")]
-    public void WithDescriptionAppendage_appends_to_empty_string_if_no_description_exists(
-        Func<string, Scenario<string>> scenarioCreation)
-    {
-        // Arrange
-        const string data = "data";
-        const string appendage = "appendage";
-
-        var scenario = scenarioCreation(data);
-
-        // Act
-        var scenarioWithTransformedDescription = scenario.WithDescriptionAppendage(appendage);
-
-        // Assert
-        scenario.Data.Should().Be(data);
-        StringRepresentationShouldBeDescription(
-            scenarioWithTransformedDescription,
-            $" {appendage}");
     }
 
     [TestCaseSource(typeof(ScenarioCreations), nameof(ScenarioCreations.FromDataWithArbitraryDescription))]
