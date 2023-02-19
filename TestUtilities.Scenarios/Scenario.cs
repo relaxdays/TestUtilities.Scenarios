@@ -104,15 +104,24 @@ public record Scenario<TData>(TData Data)
     [Pure]
     public Scenario<TTransformedData> WithTransformedData<TTransformedData>(
         Func<TData, TTransformedData> transformation) => new(transformation(Data));
-    
-    [Pure]
-    public Scenario<(TData First, TOtherData Second)> CombinedWith<TOtherData>(
-        Scenario<TOtherData> otherScenario)
-        => CombinedWith(
-            otherScenario,
-            (data, otherData) => (data, otherData),
-            (description, otherDescription) => $"({description}, {otherDescription})");
 
+    /// <summary>
+    /// Transforms the scenario by combining it with <paramref name="otherScenario"/>, applying
+    /// <paramref name="resultDataSelector"/> and <paramref name="resultDescriptionSelector"/> to obtain result data and
+    /// description, respectively.
+    /// </summary>
+    /// <param name="otherScenario">The scenario to combine this scenario with.</param>
+    /// <param name="resultDataSelector">
+    ///     The function used to obtain the data for the result scenario by using this and the other scenario's data as
+    ///     inputs.
+    /// </param>
+    /// <param name="resultDescriptionSelector">
+    ///     The function used to obtain the description for the result scenario by using this and the other scenario's
+    ///     descriptions as inputs.
+    /// </param>
+    /// <typeparam name="TOtherData">The type of the other scenario's data.</typeparam>
+    /// <typeparam name="TCombinedData">The type of the result scenario's data.</typeparam>
+    /// <returns>A scenario representing the result of combining this and the other scenario.</returns>
     [Pure]
     public Scenario<TCombinedData> CombinedWith<TOtherData, TCombinedData>(
         Scenario<TOtherData> otherScenario,
@@ -121,6 +130,20 @@ public record Scenario<TData>(TData Data)
         => WithTransformedData(data => resultDataSelector(data, otherScenario.Data))
             .WithTransformedDescription(
                 description => resultDescriptionSelector(description, otherScenario.Description));
+    
+    /// <summary>
+    /// Transforms the scenario by combining it with <paramref name="otherScenario"/>, pairing up data an descriptions.
+    /// </summary>
+    /// <param name="otherScenario">The scenario to combine this scenario with.</param>
+    /// <typeparam name="TOtherData">The type of the other scenario's data.</typeparam>
+    /// <returns>A scenario consisting of the paired up data and descriptions.</returns>
+    [Pure]
+    public Scenario<(TData First, TOtherData Second)> CombinedWith<TOtherData>(
+        Scenario<TOtherData> otherScenario)
+        => CombinedWith(
+            otherScenario,
+            (data, otherData) => (data, otherData),
+            (description, otherDescription) => $"({description}, {otherDescription})");
 
     /// <summary>
     /// Unwraps the <paramref name="scenario"/> by implicitly converting to <typeparamref name="TData"/>
