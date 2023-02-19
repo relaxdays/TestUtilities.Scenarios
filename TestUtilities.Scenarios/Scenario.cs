@@ -132,7 +132,7 @@ public record Scenario<TData>(TData Data)
                 description => resultDescriptionSelector(description, otherScenario.Description));
     
     /// <summary>
-    /// Transforms the scenario by combining it with <paramref name="otherScenario"/>, pairing up data an descriptions.
+    /// Transforms the scenario by combining it with <paramref name="otherScenario"/>, pairing up data and descriptions.
     /// </summary>
     /// <param name="otherScenario">The scenario to combine this scenario with.</param>
     /// <typeparam name="TOtherData">The type of the other scenario's data.</typeparam>
@@ -144,7 +144,7 @@ public record Scenario<TData>(TData Data)
             otherScenario,
             (data, otherData) => (data, otherData),
             (description, otherDescription) => $"({description}, {otherDescription})");
-
+    
     /// <summary>
     /// Unwraps the <paramref name="scenario"/> by implicitly converting to <typeparamref name="TData"/>
     /// and returning the underlying <see cref="Data"/>.
