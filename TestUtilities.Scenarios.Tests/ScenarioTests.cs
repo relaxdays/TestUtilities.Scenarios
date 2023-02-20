@@ -4,6 +4,7 @@ using NUnit.Framework.Internal;
 namespace Relaxdays.TestUtilities.Scenarios.Tests;
 
 [TestOf(typeof(Scenario<>))]
+[TestOf(typeof(Scenario))]
 public class ScenarioTests
 {
     // ----------------------------------------------------------------------------------------------------- //
@@ -55,13 +56,28 @@ public class ScenarioTests
                 .SetArgDisplayNames("Extension method, description selector overload, returning constant description")
         };
     }
+    
+    public static class Combinations
+    {
+        public delegate Scenario<(string First, string Second)> PairingCombination(
+            Scenario<string> first, Scenario<string> second);
+
+        public static IEnumerable<TestCaseParameters> PairingScenarios => new[]
+        {
+            new TestCaseData(new PairingCombination((first, second) => first.CombinedWith(second)))
+                .SetArgDisplayNames($"Member function {nameof(Scenario<string>.CombinedWith)}"),
+
+            new TestCaseData(new PairingCombination(Scenario.Combine))
+                .SetArgDisplayNames($"Static function {nameof(Scenario.Combine)}")
+        };
+    }
 
     // ----------------------------------------------------------------------------------------------------- //
     //                                   Configuration & Helper                                              //
     // ----------------------------------------------------------------------------------------------------- //
 
-    private static void StringRepresentationShouldBeDescription(
-        Scenario<string> scenario, string description, string because = "", params object[] becauseArgs)
+    private static void StringRepresentationShouldBeDescription<TData>(
+        Scenario<TData> scenario, string description, string because = "", params object[] becauseArgs)
         => scenario.ToString().Should().Be($"\"{description}\"", because, becauseArgs);
 
     private static void StringRepresentationsShouldBeEqual(
@@ -248,5 +264,34 @@ public class ScenarioTests
         StringRepresentationShouldBeDescription(
             playerAndStage,
             ResultDescriptionSelector(playerDescription, stageDescription));
+    }
+
+    [TestCaseSource(typeof(Combinations), nameof(Combinations.PairingScenarios))]
+    [Description("""
+        A scenario is combined with another scenario without specifying selector functions. The resulting scenario
+        should then have data and description paired up from the input scenarios.
+        """)]
+    public void Combinations_without_selector_functions_pair_up_data_and_description(
+        Combinations.PairingCombination pairingCombination)
+    {
+        // Arrange
+        const string playerData = "Vega";
+        const string playerDescription = "The player";
+        var player = playerData.AsScenario(playerDescription);
+
+        const string stageData = "Jurassic Era Research Facility";
+        const string stageDescription = "The stage";
+        var stage = stageData.AsScenario(stageDescription);
+
+        // Act
+        var playerAndStage = pairingCombination(player, stage);
+
+        // Assert
+        playerAndStage.Data.First.Should().Be(playerData);
+        playerAndStage.Data.Second.Should().Be(stageData);
+        
+        StringRepresentationShouldBeDescription(
+            playerAndStage,
+            $"({playerDescription}, {stageDescription})");
     }
 }
