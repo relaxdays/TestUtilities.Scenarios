@@ -82,7 +82,6 @@ public class ScenarioTests
 
     private static void StringRepresentationsShouldBeEqual(
             Scenario<string> scenario, Scenario<string> otherScenario, string because = "", params object[] becauseArgs)
-        // => StringRepresentationShouldBeDescription(scenario, otherScenario.ToString(), because, becauseArgs);
         => scenario.ToString().Should().Be(otherScenario.ToString(), because, becauseArgs);
 
     // ----------------------------------------------------------------------------------------------------- //
