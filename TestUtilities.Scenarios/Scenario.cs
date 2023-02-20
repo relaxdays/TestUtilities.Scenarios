@@ -103,7 +103,7 @@ public record Scenario<TData>(TData Data)
     /// </returns>
     [Pure]
     public Scenario<TTransformedData> WithTransformedData<TTransformedData>(
-        Func<TData, TTransformedData> transformation) => new(transformation(Data));
+        Func<TData, TTransformedData> transformation) => transformation(Data).AsScenario(Description);
 
     /// <summary>
     /// Transforms the scenario by combining it with <paramref name="otherScenario"/>, applying

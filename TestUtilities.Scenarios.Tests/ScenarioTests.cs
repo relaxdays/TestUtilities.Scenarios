@@ -60,8 +60,14 @@ public class ScenarioTests
     //                                   Configuration & Helper                                              //
     // ----------------------------------------------------------------------------------------------------- //
 
-    private static void StringRepresentationShouldBeDescription(Scenario<string> scenario, string description)
-        => scenario.ToString().Should().Be($"\"{description}\"");
+    private static void StringRepresentationShouldBeDescription(
+        Scenario<string> scenario, string description, string because = "", params object[] becauseArgs)
+        => scenario.ToString().Should().Be($"\"{description}\"", because, becauseArgs);
+
+    private static void StringRepresentationsShouldBeEqual(
+            Scenario<string> scenario, Scenario<string> otherScenario, string because = "", params object[] becauseArgs)
+        // => StringRepresentationShouldBeDescription(scenario, otherScenario.ToString(), because, becauseArgs);
+        => scenario.ToString().Should().Be(otherScenario.ToString(), because, becauseArgs);
 
     // ----------------------------------------------------------------------------------------------------- //
     //                                              Tests                                                    //
@@ -164,7 +170,10 @@ public class ScenarioTests
     }
 
     [TestCaseSource(typeof(ScenarioCreations), nameof(ScenarioCreations.FromDataWithArbitraryDescription))]
-    [Description("Data of a scenario is transformed. It should then contain that transformed data.")]
+    [Description("""
+        Data of a scenario is transformed. It should then contain that transformed data, keeping the original
+        description.
+        """)]
     public void WithTransformedData_transforms_existing_data(Func<string, Scenario<string>> scenarioCreation)
     {
         // Arrange
@@ -178,6 +187,10 @@ public class ScenarioTests
 
         // Assert
         scenarioWithTransformedData.Data.Should().Be(TransformData(data));
+        StringRepresentationsShouldBeEqual(
+            scenario,
+            scenarioWithTransformedData,
+            "transforming data should not alter the description");
     }
 
     // TODO: Use other types than string as well
@@ -203,5 +216,37 @@ public class ScenarioTests
 
         var dataFromConversion = implicitConversion();
         dataFromConversion.Should().Be(data, "conversion should return the wrapped data");
+    }
+
+    [Test]
+    [Description("""
+        A scenario is combined with another scenario. The resulting scenario should then have data and description
+        constructed from the specified selector functions.
+        """)]
+    public void CombinedWith_uses_specified_selector_functions()
+    {
+        // Arrange
+        const string playerData = "Ibuki";
+        const string playerDescription = "The player";
+        var player = playerData.AsScenario(playerDescription);
+
+        const string stageData = "Amazon River Basin";
+        const string stageDescription = "The stage";
+        var stage = stageData.AsScenario(stageDescription);
+
+        string ResultDataSelector(string first, string second) => $"{first} @ {second}";
+        string ResultDescriptionSelector(string first, string second) => $"{first} ; {second}";
+
+        // Act
+        var playerAndStage = player.CombinedWith(stage, ResultDataSelector, ResultDescriptionSelector);
+
+        // Assert
+        playerAndStage.Data.Should().Be(
+            ResultDataSelector(playerData, stageData),
+            "result data selector should be used to create result data");
+        
+        StringRepresentationShouldBeDescription(
+            playerAndStage,
+            ResultDescriptionSelector(playerDescription, stageDescription));
     }
 }
