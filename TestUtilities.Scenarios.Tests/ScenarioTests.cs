@@ -4,6 +4,7 @@ using NUnit.Framework.Internal;
 namespace Relaxdays.TestUtilities.Scenarios.Tests;
 
 [TestOf(typeof(Scenario<>))]
+[TestOf(typeof(Scenario))]
 public class ScenarioTests
 {
     // ----------------------------------------------------------------------------------------------------- //
@@ -22,6 +23,9 @@ public class ScenarioTests
 
             new TestCaseData(new Func<string, Scenario<string>>(data => data.AsScenario("description")))
                 .SetArgDisplayNames("Extension method, with description"),
+            
+            new TestCaseData(new Func<string, Scenario<string>>(data => data.AsScenario($"{data} description")))
+                .SetArgDisplayNames("Extension method, with selected description")
         };
 
         public static IEnumerable<TestCaseParameters> FromDataWithDefaultDescription => new[]
@@ -46,6 +50,25 @@ public class ScenarioTests
             new TestCaseData(new Func<string, string, Scenario<string>>(
                     (data, description) => data.AsScenario(description)))
                 .SetArgDisplayNames("Extension method, description overload"),
+            
+            new TestCaseData(new Func<string, string, Scenario<string>>(
+                    (data, description) => data.AsScenario(_ => description)))
+                .SetArgDisplayNames("Extension method, description selector overload, returning constant description")
+        };
+    }
+    
+    public static class Combinations
+    {
+        public delegate Scenario<(string First, string Second)> PairingCombination(
+            Scenario<string> first, Scenario<string> second);
+
+        public static IEnumerable<TestCaseParameters> PairingScenarios => new[]
+        {
+            new TestCaseData(new PairingCombination((first, second) => first.CombinedWith(second)))
+                .SetArgDisplayNames($"Member function {nameof(Scenario<string>.CombinedWith)}"),
+
+            new TestCaseData(new PairingCombination(Scenario.Combine))
+                .SetArgDisplayNames($"Static function {nameof(Scenario.Combine)}")
         };
     }
 
@@ -53,8 +76,13 @@ public class ScenarioTests
     //                                   Configuration & Helper                                              //
     // ----------------------------------------------------------------------------------------------------- //
 
-    private static void StringRepresentationShouldBeDescription(Scenario<string> scenario, string description)
-        => scenario.ToString().Should().Be($"\"{description}\"");
+    private static void StringRepresentationShouldBeDescription<TData>(
+        Scenario<TData> scenario, string description, string because = "", params object[] becauseArgs)
+        => scenario.ToString().Should().Be($"\"{description}\"", because, becauseArgs);
+
+    private static void StringRepresentationsShouldBeEqual(
+            Scenario<string> scenario, Scenario<string> otherScenario, string because = "", params object[] becauseArgs)
+        => scenario.ToString().Should().Be(otherScenario.ToString(), because, becauseArgs);
 
     // ----------------------------------------------------------------------------------------------------- //
     //                                              Tests                                                    //
@@ -157,7 +185,10 @@ public class ScenarioTests
     }
 
     [TestCaseSource(typeof(ScenarioCreations), nameof(ScenarioCreations.FromDataWithArbitraryDescription))]
-    [Description("Data of a scenario is transformed. It should then contain that transformed data.")]
+    [Description("""
+        Data of a scenario is transformed. It should then contain that transformed data, keeping the original
+        description.
+        """)]
     public void WithTransformedData_transforms_existing_data(Func<string, Scenario<string>> scenarioCreation)
     {
         // Arrange
@@ -171,6 +202,10 @@ public class ScenarioTests
 
         // Assert
         scenarioWithTransformedData.Data.Should().Be(TransformData(data));
+        StringRepresentationsShouldBeEqual(
+            scenario,
+            scenarioWithTransformedData,
+            "transforming data should not alter the description");
     }
 
     // TODO: Use other types than string as well
@@ -196,5 +231,66 @@ public class ScenarioTests
 
         var dataFromConversion = implicitConversion();
         dataFromConversion.Should().Be(data, "conversion should return the wrapped data");
+    }
+
+    [Test]
+    [Description("""
+        A scenario is combined with another scenario. The resulting scenario should then have data and description
+        constructed from the specified selector functions.
+        """)]
+    public void CombinedWith_uses_specified_selector_functions()
+    {
+        // Arrange
+        const string playerData = "Ibuki";
+        const string playerDescription = "The player";
+        var player = playerData.AsScenario(playerDescription);
+
+        const string stageData = "Amazon River Basin";
+        const string stageDescription = "The stage";
+        var stage = stageData.AsScenario(stageDescription);
+
+        string ResultDataSelector(string first, string second) => $"{first} @ {second}";
+        string ResultDescriptionSelector(string first, string second) => $"{first} ; {second}";
+
+        // Act
+        var playerAndStage = player.CombinedWith(stage, ResultDataSelector, ResultDescriptionSelector);
+
+        // Assert
+        playerAndStage.Data.Should().Be(
+            ResultDataSelector(playerData, stageData),
+            "result data selector should be used to create result data");
+        
+        StringRepresentationShouldBeDescription(
+            playerAndStage,
+            ResultDescriptionSelector(playerDescription, stageDescription));
+    }
+
+    [TestCaseSource(typeof(Combinations), nameof(Combinations.PairingScenarios))]
+    [Description("""
+        A scenario is combined with another scenario without specifying selector functions. The resulting scenario
+        should then have data and description paired up from the input scenarios.
+        """)]
+    public void Combinations_without_selector_functions_pair_up_data_and_description(
+        Combinations.PairingCombination pairingCombination)
+    {
+        // Arrange
+        const string playerData = "Vega";
+        const string playerDescription = "The player";
+        var player = playerData.AsScenario(playerDescription);
+
+        const string stageData = "Jurassic Era Research Facility";
+        const string stageDescription = "The stage";
+        var stage = stageData.AsScenario(stageDescription);
+
+        // Act
+        var playerAndStage = pairingCombination(player, stage);
+
+        // Assert
+        playerAndStage.Data.First.Should().Be(playerData);
+        playerAndStage.Data.Second.Should().Be(stageData);
+        
+        StringRepresentationShouldBeDescription(
+            playerAndStage,
+            $"({playerDescription}, {stageDescription})");
     }
 }
