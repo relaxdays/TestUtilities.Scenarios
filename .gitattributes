@@ -1,0 +1,12 @@
+# Default behavior for all paths
+#   * text -> Enable eol normalization
+#   * auto -> Enable automatic eol conversion
+#   * See: https://git-scm.com/docs/gitattributes#_text
+* text=auto
+
+# Shell scripts
+#   * text   -> Enable eol normalization
+#   * eol=lf -> Fore lf in the working directory
+#   * See: https://git-scm.com/docs/gitattributes#_eol
+*.sh text eol=lf
+Examples/showcase text eol=lf
