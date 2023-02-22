@@ -32,7 +32,7 @@ public static class GenericExtensions
         => data.AsScenario().WithDescription(description);
 
     /// <summary>
-    ///     Wraps <see cref="data" /> in a <see cref="Scenario{TData}" /> with a description created by applying
+    ///     Wraps <paramref name="data" /> in a <see cref="Scenario{TData}" /> with a description created by applying
     ///     <paramref name="descriptionSelector" /> to <paramref name="data" />.
     /// </summary>
     /// <remarks>
