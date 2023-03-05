@@ -1,15 +1,65 @@
+<!--
+    This is based on reference .csproj aiming to implement all current best practices with regargs to nuget package
+    creation. The reference .csproj has extensive documentation, so if anything about this .csproj is unclear, chances
+    are it will be documented in the reference. It is located at
+    https://github.com/ehonda/EHonda.HelloNuget/blob/main/EHonda.HelloNuget/EHonda.HelloNuget.csproj
+-->
 <Project Sdk="Microsoft.NET.Sdk">
 
+    <!-- General dotnet / C# settings for the project -->
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <RootNamespace>Relaxdays.TestUtilities.Scenarios</RootNamespace>
+        <DefineConstants>JETBRAINS_ANNOTATIONS</DefineConstants>
     </PropertyGroup>
 
+    <!-- NuGet package -->
+    <PropertyGroup>
+        <Version>1.0.0</Version>
+        <PackageId>Relaxdays.TestUtilities.Scenarios</PackageId>
+        <Authors>Relaxdays GmbH, Dennis Renz</Authors>
+        <Description>
+            This project is focused around a wrapper type designated to produce clearer unit test output by letting
+            users provide a description for test methods parameters.
+        </Description>
+        <Copyright>Copyright (c) Relaxdays GmbH 2023</Copyright>
+        <PackageProjectUrl>https://github.com/relaxdays/TestUtilities.Scenarios</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageTags>unit-testing NUnit MSTest2 xUnit TDD</PackageTags>
+        <PackageReleaseNotes>
+            See: https://github.com/relaxdays/TestUtilities.Scenarios/releases/tag/v1.0.0
+        </PackageReleaseNotes>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <!-- Pack readme file -->
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <!-- SourceLink -->
+    <PropertyGroup>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+
+    <!-- Deterministic build -->
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+
+    <!-- Dependencies -->
     <ItemGroup>
       <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
+      <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     </ItemGroup>
 
 </Project>
