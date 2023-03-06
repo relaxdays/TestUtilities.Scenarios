@@ -18,7 +18,7 @@
 
     <!-- NuGet package -->
     <PropertyGroup>
-        <Version>1.0.0</Version>
+        <Version>1.0.1</Version>
         <PackageId>Relaxdays.TestUtilities.Scenarios</PackageId>
         <Authors>Relaxdays GmbH, Dennis Renz</Authors>
         <Description>
@@ -27,17 +27,19 @@
         </Description>
         <Copyright>Copyright (c) Relaxdays GmbH 2023</Copyright>
         <PackageProjectUrl>https://github.com/relaxdays/TestUtilities.Scenarios</PackageProjectUrl>
+        <PackageIcon>Relaxdays.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageTags>unit-testing NUnit MSTest2 xUnit TDD</PackageTags>
         <PackageReleaseNotes>
-            See: https://github.com/relaxdays/TestUtilities.Scenarios/releases/tag/v1.0.0
+            See: https://github.com/relaxdays/TestUtilities.Scenarios/releases/tag/v1.0.1
         </PackageReleaseNotes>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
-    <!-- Pack readme file -->
+    <!-- Pack readme file and icon -->
     <ItemGroup>
         <None Include="..\README.md" Pack="true" PackagePath="\" />
+        <None Include="..\Relaxdays.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 
     <!-- SourceLink -->
