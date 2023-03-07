@@ -91,7 +91,7 @@ public record Scenario<TData>(TData Data)
         => WithTransformedData(data => resultDataSelector(data, otherScenario.Data))
             .WithTransformedDescription(
                 description => resultDescriptionSelector(description, otherScenario.Description));
-    
+
     /// <summary>
     /// Transforms the scenario by combining it with <paramref name="otherScenario"/>, pairing up data and descriptions.
     /// </summary>
@@ -105,7 +105,7 @@ public record Scenario<TData>(TData Data)
             otherScenario,
             (data, otherData) => (data, otherData),
             (description, otherDescription) => $"({description}, {otherDescription})");
-    
+
     /// <summary>
     /// Unwraps the <paramref name="scenario"/> by implicitly converting to <typeparamref name="TData"/>
     /// and returning the underlying <see cref="Data"/>.
