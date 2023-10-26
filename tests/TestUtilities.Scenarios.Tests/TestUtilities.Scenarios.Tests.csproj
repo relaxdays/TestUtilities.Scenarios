@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\TestUtilities.Scenarios\TestUtilities.Scenarios.csproj" />
+        <ProjectReference Include="..\..\src\TestUtilities.Scenarios\TestUtilities.Scenarios.csproj" />
     </ItemGroup>
 
 </Project>

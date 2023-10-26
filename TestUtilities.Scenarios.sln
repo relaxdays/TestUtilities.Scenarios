@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUtilities.Scenarios", "TestUtilities.Scenarios\TestUtilities.Scenarios.csproj", "{0B81706F-247F-4D9A-96AB-7398EA6C27E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUtilities.Scenarios", "src\TestUtilities.Scenarios\TestUtilities.Scenarios.csproj", "{0B81706F-247F-4D9A-96AB-7398EA6C27E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUtilities.Scenarios.Tests", "TestUtilities.Scenarios.Tests\TestUtilities.Scenarios.Tests.csproj", "{46F6F94B-4011-4A8F-8107-7C0BCF8F5B00}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUtilities.Scenarios.Tests", "tests\TestUtilities.Scenarios.Tests\TestUtilities.Scenarios.Tests.csproj", "{46F6F94B-4011-4A8F-8107-7C0BCF8F5B00}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{47602D35-C0D8-4A58-9DD7-2826F1ADCFC7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3247A4C8-CD60-4798-94FF-BA44823451D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +28,9 @@ Global
 		{46F6F94B-4011-4A8F-8107-7C0BCF8F5B00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46F6F94B-4011-4A8F-8107-7C0BCF8F5B00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46F6F94B-4011-4A8F-8107-7C0BCF8F5B00}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{46F6F94B-4011-4A8F-8107-7C0BCF8F5B00} = {3247A4C8-CD60-4798-94FF-BA44823451D4}
+		{0B81706F-247F-4D9A-96AB-7398EA6C27E7} = {47602D35-C0D8-4A58-9DD7-2826F1ADCFC7}
 	EndGlobalSection
 EndGlobal

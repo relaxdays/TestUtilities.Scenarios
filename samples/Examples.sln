@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.NUnit", "Examples.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.XUnit", "Examples.XUnit\Examples.XUnit.csproj", "{8F9DEAB9-7732-4C43-A284-462A32C201AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUtilities.Scenarios", "..\TestUtilities.Scenarios\TestUtilities.Scenarios.csproj", "{45599EF7-6848-42BC-AC61-4F1F8EA227FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUtilities.Scenarios", "..\src\TestUtilities.Scenarios\TestUtilities.Scenarios.csproj", "{45599EF7-6848-42BC-AC61-4F1F8EA227FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples.Common", "Examples.Common\Examples.Common.csproj", "{673FC7B5-78E9-4416-BB36-1E8129C11403}"
 EndProject
