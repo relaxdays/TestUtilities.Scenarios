@@ -2,7 +2,7 @@ version: 2
 updates:
   # We can't use yaml anchors (or another way to reuse the common configuration), so there's some repetetiveness to the
   # array elements provided here, as (right now) we just want the same config, but for every .csproj in the project.
-  - directory: "/TestUtilities.Scenarios"
+  - directory: "/src/TestUtilities.Scenarios"
     package-ecosystem: "nuget"
     schedule:
       interval: "daily"
@@ -10,7 +10,7 @@ updates:
       - "ehonda"
     open-pull-requests-limit: 5
 
-  - directory: "/TestUtilities.Scenarios.Tests"
+  - directory: "/tests/TestUtilities.Scenarios.Tests"
     package-ecosystem: "nuget"
     schedule:
       interval: "daily"
@@ -18,7 +18,7 @@ updates:
       - "ehonda"
     open-pull-requests-limit: 5
 
-  - directory: "/Examples/Examples.Common"
+  - directory: "/samples/Examples/Examples.Common"
     package-ecosystem: "nuget"
     schedule:
       interval: "daily"
@@ -26,7 +26,7 @@ updates:
       - "ehonda"
     open-pull-requests-limit: 5
 
-  - directory: "/Examples/Examples.MSTest"
+  - directory: "/samples/Examples/Examples.MSTest"
     package-ecosystem: "nuget"
     schedule:
       interval: "daily"
@@ -34,7 +34,7 @@ updates:
       - "ehonda"
     open-pull-requests-limit: 5
 
-  - directory: "/Examples/Examples.NUnit"
+  - directory: "/samples/Examples/Examples.NUnit"
     package-ecosystem: "nuget"
     schedule:
       interval: "daily"
@@ -42,7 +42,7 @@ updates:
       - "ehonda"
     open-pull-requests-limit: 5
 
-  - directory: "/Examples/Examples.XUnit"
+  - directory: "/samples/Examples/Examples.XUnit"
     package-ecosystem: "nuget"
     schedule:
       interval: "daily"
