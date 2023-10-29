@@ -48,4 +48,17 @@ public static class GenericExtensions
     [Pure]
     public static Scenario<TData> AsScenario<TData>(this TData data, Func<TData, string> descriptionSelector)
         => data.AsScenario(descriptionSelector(data));
+
+    /// <summary>
+    /// Wraps each value of <paramref name="values"/> in a <see cref="Scenario{TData}"/> with a description created by applying
+    /// <paramref name="descriptionSelector"/> on each value of <paramref name="values"/> 
+    /// </summary>
+    /// <inheritdoc cref="AsScenario{TData}(TData)" />
+    /// <param name="values">The collection with values to wrap.</param>
+    /// <param name="descriptionSelector">The function used to construct the description from each value of values.</param>
+    /// <typeparam name="TData">The type of the collection values to wrap.</typeparam>
+    /// <returns>The collection with each value wrapped in a scenario.</returns>
+    [Pure]
+    public static IEnumerable<Scenario<TData>> AsScenarios<TData>(this IEnumerable<TData> values, Func<TData, string> descriptionSelector) =>
+        values.Select(value => value.AsScenario(descriptionSelector));
 }
