@@ -3,6 +3,8 @@ using NUnit.Framework.Internal;
 
 namespace Relaxdays.TestUtilities.Scenarios.Tests;
 
+using FluentAssertions.Execution;
+
 [TestOf(typeof(Scenario<>))]
 [TestOf(typeof(Scenario))]
 public class ScenarioTests
@@ -53,14 +55,15 @@ public class ScenarioTests
 
             new TestCaseData(new Func<string, string, Scenario<string>>(
                     (data, description) => data.AsScenario(_ => description)))
-                .SetArgDisplayNames("Extension method, description selector overload, returning constant description")
+                .SetArgDisplayNames("Extension method, description selector overload, returning constant description"),
         };
     }
 
     public static class Combinations
     {
         public delegate Scenario<(string First, string Second)> PairingCombination(
-            Scenario<string> first, Scenario<string> second);
+            Scenario<string> first,
+            Scenario<string> second);
 
         public static IEnumerable<TestCaseParameters> PairingScenarios => new[]
         {
@@ -77,11 +80,31 @@ public class ScenarioTests
     // ----------------------------------------------------------------------------------------------------- //
 
     private static void StringRepresentationShouldBeDescription<TData>(
-        Scenario<TData> scenario, string description, string because = "", params object[] becauseArgs)
+        Scenario<TData> scenario,
+        string description,
+        string because = "",
+        params object[] becauseArgs)
         => scenario.ToString().Should().Be($"\"{description}\"", because, becauseArgs);
 
+    private static void StringRepresentationShouldBeDescription<TData>(
+        IEnumerable<Scenario<TData>> scenarios,
+        IEnumerable<string> descriptions,
+        string because = "",
+        params object[] becauseArgs)
+    {
+        using var _ = new AssertionScope();
+        foreach (var (scenario, description) in scenarios.Zip(descriptions))
+        {
+            scenario.ToString().Should().Be($"\"{description}\"", because, becauseArgs);
+        }
+    }
+
+
     private static void StringRepresentationsShouldBeEqual(
-            Scenario<string> scenario, Scenario<string> otherScenario, string because = "", params object[] becauseArgs)
+        Scenario<string> scenario,
+        Scenario<string> otherScenario,
+        string because = "",
+        params object[] becauseArgs)
         => scenario.ToString().Should().Be(otherScenario.ToString(), because, becauseArgs);
 
     // ----------------------------------------------------------------------------------------------------- //
@@ -119,12 +142,38 @@ public class ScenarioTests
         StringRepresentationShouldBeDescription(scenario, description);
     }
 
+    [Test]
+    [Description("A description is set for each scenario in a collection. The string representation of each scenario "
+                 + "should then be a matching description")]
+    public void Description_sets_string_representation_when_using_collection_overload()
+    {
+        // Arrange
+        var data = new[]
+        {
+            "data1",
+            "data2",
+            "data3",
+        };
+
+        // Act
+        var scenarios = data.AsScenarios(value => $"description {value}").ToArray();
+
+        // Assert
+        scenarios.Select(x => x.Data).Should().BeEquivalentTo("data1", "data2", "data3");
+        StringRepresentationShouldBeDescription(scenarios, new[]
+        {
+            "description data1",
+            "description data2",
+            "description data3",
+        });
+    }
+
     // TODO: Test for data with ToString that returns null
     [TestCaseSource(typeof(ScenarioCreations), nameof(ScenarioCreations.FromDataWithDefaultDescription))]
     [Description("""
-        A scenario is created without setting a description. The description should then default to the data's string
-        representation.
-        """)]
+                 A scenario is created without setting a description. The description should then default to the data's string
+                 representation.
+                 """)]
     public void Default_description_is_data_to_string(Func<string, Scenario<string>> scenarioCreation)
     {
         // Arrange
@@ -186,9 +235,9 @@ public class ScenarioTests
 
     [TestCaseSource(typeof(ScenarioCreations), nameof(ScenarioCreations.FromDataWithArbitraryDescription))]
     [Description("""
-        Data of a scenario is transformed. It should then contain that transformed data, keeping the original
-        description.
-        """)]
+                 Data of a scenario is transformed. It should then contain that transformed data, keeping the original
+                 description.
+                 """)]
     public void WithTransformedData_transforms_existing_data(Func<string, Scenario<string>> scenarioCreation)
     {
         // Arrange
@@ -235,9 +284,9 @@ public class ScenarioTests
 
     [Test]
     [Description("""
-        A scenario is combined with another scenario. The resulting scenario should then have data and description
-        constructed from the specified selector functions.
-        """)]
+                 A scenario is combined with another scenario. The resulting scenario should then have data and description
+                 constructed from the specified selector functions.
+                 """)]
     public void CombinedWith_uses_specified_selector_functions()
     {
         // Arrange
@@ -267,9 +316,9 @@ public class ScenarioTests
 
     [TestCaseSource(typeof(Combinations), nameof(Combinations.PairingScenarios))]
     [Description("""
-        A scenario is combined with another scenario without specifying selector functions. The resulting scenario
-        should then have data and description paired up from the input scenarios.
-        """)]
+                 A scenario is combined with another scenario without specifying selector functions. The resulting scenario
+                 should then have data and description paired up from the input scenarios.
+                 """)]
     public void Combinations_without_selector_functions_pair_up_data_and_description(
         Combinations.PairingCombination pairingCombination)
     {
