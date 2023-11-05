@@ -49,3 +49,11 @@ updates:
     assignees:
       - "ehonda"
     open-pull-requests-limit: 5
+
+  - directory: "/.github/workflows"
+    package-ecosystem: "github-actions"
+    schedule:
+      interval: "daily"
+    assignees:
+      - "ehonda"
+    open-pull-requests-limit: 5
