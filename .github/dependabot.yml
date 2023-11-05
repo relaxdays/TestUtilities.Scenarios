@@ -50,7 +50,9 @@ updates:
       - "ehonda"
     open-pull-requests-limit: 5
 
-  - directory: "/.github/workflows"
+  # We can just specify the directory root here, as there is special casing for the /.github/workflows directory, as
+  # documented in https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#directory
+  - directory: "/"
     package-ecosystem: "github-actions"
     schedule:
       interval: "daily"
