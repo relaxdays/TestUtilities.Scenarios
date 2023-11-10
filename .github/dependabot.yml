@@ -1,48 +1,8 @@
 version: 2
 updates:
-  # We can't use yaml anchors (or another way to reuse the common configuration), so there's some repetetiveness to the
-  # array elements provided here, as (right now) we just want the same config, but for every .csproj in the project.
-  - directory: "/src/TestUtilities.Scenarios"
-    package-ecosystem: "nuget"
-    schedule:
-      interval: "daily"
-    assignees:
-      - "ehonda"
-    open-pull-requests-limit: 5
-
-  - directory: "/tests/TestUtilities.Scenarios.Tests"
-    package-ecosystem: "nuget"
-    schedule:
-      interval: "daily"
-    assignees:
-      - "ehonda"
-    open-pull-requests-limit: 5
-
-  - directory: "/samples/Examples.Common"
-    package-ecosystem: "nuget"
-    schedule:
-      interval: "daily"
-    assignees:
-      - "ehonda"
-    open-pull-requests-limit: 5
-
-  - directory: "/samples/Examples.MSTest"
-    package-ecosystem: "nuget"
-    schedule:
-      interval: "daily"
-    assignees:
-      - "ehonda"
-    open-pull-requests-limit: 5
-
-  - directory: "/samples/Examples.NUnit"
-    package-ecosystem: "nuget"
-    schedule:
-      interval: "daily"
-    assignees:
-      - "ehonda"
-    open-pull-requests-limit: 5
-
-  - directory: "/samples/Examples.XUnit"
+  # Since we use central package management, we can just specify the root directory here as it contains
+  # Directory.Packages.props which is the source of our dependency versions.
+  - directory: "/"
     package-ecosystem: "nuget"
     schedule:
       interval: "daily"
