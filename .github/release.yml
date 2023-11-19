@@ -1,0 +1,13 @@
+changelog:
+  exclude:
+    authors:
+      - dependabot[bot]
+  categories:
+    - title: Features 🦚
+      labels:
+        - enhancement
+    - title: Repository 💾
+      labels:
+        - repository
+    - title: Miscellaneous 🦄
+        - "*"
