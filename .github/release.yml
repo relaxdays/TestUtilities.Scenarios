@@ -1,0 +1,17 @@
+changelog:
+  exclude:
+    authors:
+      - dependabot[bot]
+  categories:
+    - title: Features 🦚
+      labels:
+        - enhancement
+    - title: Infrastructure 🏗
+      labels:
+        - devops
+        - infrastructure
+    - title: Repository 💾
+      labels:
+        - repository
+    - title: Miscellaneous 🦄
+        - "*"
