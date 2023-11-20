@@ -1,0 +1,96 @@
+# This workflow automatically creates a release and publishes to nuget.org, if the package version does not already
+# exist. For now it is just copied from this work in progress (which has more context in comments):
+#   https://github.com/ehonda/EHonda.HelloNuget/blob/eb9bd36a907fb7ca57b6a88df6e935a285517ca4/.github/workflows/auto-release.yml
+#
+# It will soon be replaced by a version hosted centrally in the Relaxdays organization.
+name: Release and publish to nuget.org
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    uses: ./.github/workflows/dotnet-test.yml
+
+  get-package-metadata:
+    name: Get package metadata
+    runs-on: ubuntu-latest
+    outputs:
+      package-version: ${{ steps.get-package-version.outputs.package-version }}
+      package-id: ${{ steps.get-package-id.outputs.package-id }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8
+      - name: Get package version
+        id: get-package-version
+        run: echo "package-version=$(dotnet build src/TestUtilities.Scenarios --getProperty:PackageVersion)" >> "$GITHUB_OUTPUT"
+      - name: Get package id
+        id: get-package-id
+        run: echo "package-id=$(dotnet build src/TestUtilities.Scenarios --getProperty:PackageId)" >> "$GITHUB_OUTPUT"
+
+  check-nuget-exists:
+    name: Check nuget.org package exists
+    runs-on: ubuntu-latest
+    needs: get-package-metadata
+    outputs:
+      should-release: ${{ steps.check-nuget-exists.outputs.should-release }}
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8
+      - name: Check nuget.org package exists
+        id: check-nuget-exists
+        env:
+          PACKAGE_VERSION: ${{ needs.get-package-metadata.outputs.package-version }}
+          PACKAGE_ID: ${{ needs.get-package-metadata.outputs.package-id }}
+        run: |
+          LATEST_PACKAGE=$(nuget list $PACKAGE_ID -Source https://api.nuget.org/v3/index.json)
+          LATEST_VERSION=$(echo $LATEST_PACKAGE | awk '{print $NF}')
+          if [ "$LATEST_VERSION" == "$PACKAGE_VERSION" ]; then
+            echo -e "\e[32mINFO:\e[0m Package $PACKAGE_ID@$PACKAGE_VERSION already exists"
+            echo "should-release=false" >> $GITHUB_OUTPUT
+          else
+            echo -e "\e[32mINFO:\e[0m Package $PACKAGE_ID@$PACKAGE_VERSION does not exist"
+            echo "should-release=true" >> $GITHUB_OUTPUT
+          fi
+
+  create-release:
+    name: Create release
+    runs-on: ubuntu-latest
+    permissions:
+      # Required to create the release
+      contents: write
+    needs: [test, get-package-metadata, check-nuget-exists]
+    if: needs.check-nuget-exists.outputs.should-release == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Create release
+        env:
+          PACKAGE_VERSION: ${{ needs.get-package-metadata.outputs.package-version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "v$PACKAGE_VERSION" --generate-notes
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: create-release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8
+      - name: Pack
+        run: dotnet pack --configuration Release --output ./packages
+      - name: Push to NuGet.org
+        run: dotnet nuget push ./packages/*.nupkg --source https://api.nuget.org/v3/index.json --api-key "$NUGET_ORG_API_KEY"
+        env:
+          NUGET_ORG_API_KEY: ${{ secrets.NUGET_ORG_API_KEY }}

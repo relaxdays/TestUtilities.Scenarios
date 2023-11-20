@@ -1,0 +1,20 @@
+# This is our base workflow when we want to run tests. It will soon be replaced by a version hosted centrally in the
+# Relaxdays organization.
+name: .NET Test
+
+on:
+  workflow_call:
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8
+      - name: Run tests
+        run: dotnet test --configuration Release

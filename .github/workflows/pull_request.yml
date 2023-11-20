@@ -1,0 +1,11 @@
+# Runs the tests on any pull request to the main branch
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    uses: ./.github/workflows/dotnet-test.yml
